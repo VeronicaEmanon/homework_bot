@@ -6,7 +6,6 @@ from http import HTTPStatus
 import telegram
 import requests
 from dotenv import load_dotenv
-# from telegram import Bot
 
 load_dotenv()
 PRACTICUM_TOKEN = os.getenv("PRACTICUM_TOKEN")
@@ -27,7 +26,7 @@ HOMEWORK_STATUSES = {
 logging.basicConfig(
     level=logging.INFO,
     filename='program.log',
-    # filemode='w',
+    filemode='w',
     format='%(asctime)s, %(levelname)s, %(message)s, %(name)s'
 )
 logger = logging.getLogger(__name__)
