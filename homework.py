@@ -6,7 +6,6 @@ from http import HTTPStatus
 import telegram
 import requests
 from dotenv import load_dotenv
-# from telegram import Bot
 
 load_dotenv()
 PRACTICUM_TOKEN = os.getenv("PRACTICUM_TOKEN")
@@ -27,7 +26,7 @@ HOMEWORK_STATUSES = {
 logging.basicConfig(
     level=logging.INFO,
     filename='program.log',
-    # filemode='w',
+    filemode='w',
     format='%(asctime)s, %(levelname)s, %(message)s, %(name)s'
 )
 logger = logging.getLogger(__name__)
@@ -49,6 +48,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
+    """Ответ от API Практикум.Домашка."""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     api_answer = {
@@ -70,6 +70,7 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
+    """Корректность ответа от API."""
     logger.info
     if not isinstance(response, dict):
         logger.error("Это не словарь")
@@ -85,6 +86,7 @@ def check_response(response):
 
 
 def parse_status(homework):
+    """Извлекаем информацию о конкретной домашней работе."""
     logger.info
     homework_name = homework.get('homework_name')
     homework_status = homework.get('status')
@@ -101,6 +103,7 @@ def parse_status(homework):
 
 
 def check_tokens():
+    """Проверка наличия токенов."""
     if all([
         PRACTICUM_TOKEN,
         TELEGRAM_TOKEN,
