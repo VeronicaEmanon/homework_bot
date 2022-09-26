@@ -84,7 +84,7 @@ def check_response(response):
         raise TypeError("Ответ API не словарь.")
     if "homeworks" not in response:
         raise KeyError("Нет ключа 'homeworks' в ответе от API")
-    homework = response["homeworks"] 
+    homework = response["homeworks"]
     if not isinstance(homework, list):
         raise TypeError("Ответ API 'homeworks' ожидает список")
     return homework
@@ -95,14 +95,14 @@ def parse_status(homework):
     logger.info("Извлекаем информацию о конкретной домашней работе.")
     if "homework_name" not in homework:
         raise KeyError(
-        f"В {homework} нет ключа 'homework_name'в ответе API."
-    )
+            f"В {homework} нет ключа 'homework_name'в ответе API."
+        )
     if "status" not in homework:
         raise KeyError(
             f"В {homework} нет ключа 'status' в ответе API."
-    )
-    homework_name = homework["homework_name"]
-    homework_status = homework["status"]
+        )
+    homework_name = homework.get("homework_name")
+    homework_status = homework.get("status")
     try:
         verdict = HOMEWORK_VERDICTS[homework_status]
     except Exception:
@@ -110,8 +110,7 @@ def parse_status(homework):
             f"Статуса {homework_status} нет в 'HOMEWORK_VERDICTS'."
         )
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
-    #!!!! f"Изменился статус проверки работы '{homework_name}'. {verdict}"
-    #c такими кавычками пайтест не пропускает
+
 
 def check_tokens():
     """Проверка наличия токенов."""
