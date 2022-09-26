@@ -106,7 +106,7 @@ def parse_status(homework):
     try:
         verdict = HOMEWORK_VERDICTS[homework_status]
     except Exception:
-        raise Exception(
+        raise KeyError(
             f"Статуса {homework_status} нет в 'HOMEWORK_VERDICTS'."
         )
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
@@ -127,7 +127,7 @@ def main():
     if not check_tokens():
         tokenErrMSG = ("Ошибка в переменных окружения")
         logger.critical(tokenErrMSG)
-        raise ValueError(tokenErrMSG)
+        raise KeyError(tokenErrMSG)
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
     status = ''
