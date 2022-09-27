@@ -1,4 +1,3 @@
-from http.client import ResponseNotReady
 import logging
 import os
 import time
