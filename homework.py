@@ -1,7 +1,9 @@
+from http.client import ResponseNotReady
 import logging
 import os
 import time
 from http import HTTPStatus
+
 import telegram
 import requests
 from dotenv import load_dotenv
@@ -48,7 +50,7 @@ def send_message(bot, message):
             f"Сообщение удачно отправлено:'{message}'."
         )
     except telegram.TelegramError as message:
-        raise KeyError(
+        raise telegram.TelegramError(
             f"Ошибка при отправке сообщения '{message}'."
         )
 
@@ -63,15 +65,16 @@ def get_api_answer(current_timestamp):
         "params": params
     }
     logger.info("Проверям получен ли ответ от API Практикум.Домашка")
+    response = requests.get(**hw_statuses)
+    if response.status_code != HTTPStatus.OK:
+        st_code_message = (
+            f"Ошибка статус кода страницы {response.status_code}."
+        )
+        raise StatusCodeError(st_code_message)
     try:
-        response = requests.get(**hw_statuses)
-        if response.status_code != HTTPStatus.OK:
-            st_code_message = (
-                f"Ошибка статус кода страницы {response.status_code}."
-            )
-            raise StatusCodeError(st_code_message)
+        response
     except Exception as error:
-        raise KeyError(
+        raise ValueError(
             f"Ошибка при запросе к эндпоинту {error}."
         )
     return response.json()
@@ -145,8 +148,10 @@ def main():
             message = (
                 f"Сбой в работе программы: {error}"
             )
-            logger.error(message)
-            send_message(bot, message)
+            if message != status:
+                logger.error(message)
+                send_message(bot, message)
+                message = status
         finally:
             time.sleep(RETRY_TIME)
 
