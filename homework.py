@@ -64,18 +64,17 @@ def get_api_answer(current_timestamp):
         "params": params
     }
     logger.info("Проверям получен ли ответ от API Практикум.Домашка")
-    response = requests.get(**hw_statuses)
+    try:
+        response = requests.get(**hw_statuses)
+    except Exception as error:
+        raise requests.exceptions.RequestException(
+            f"Ошибка при запросе к эндпоинту {error}."
+        )
     if response.status_code != HTTPStatus.OK:
         st_code_message = (
             f"Ошибка статус кода страницы {response.status_code}."
         )
         raise StatusCodeError(st_code_message)
-    try:
-        response
-    except Exception as error:
-        raise ValueError(
-            f"Ошибка при запросе к эндпоинту {error}."
-        )
     return response.json()
 
 
@@ -131,7 +130,8 @@ def main():
         logger.critical(tokenErrMSG)
         raise KeyError(tokenErrMSG)
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    current_timestamp = int(time.time())
+    current_timestamp = 1
+    # int(time.time())
     status = ''
     while True:
         try:
